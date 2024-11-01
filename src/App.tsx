@@ -1,24 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Container } from "@mui/material";
+import { useSelector } from "react-redux";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+
+import Header from "./components/Header";
+import TaskList from "./components/TaskList";
+import Login from "./components/Login";
+
+import { RootState } from "./store";
+
+import "./App.css";
 
 function App() {
+  const isLoggedIn = useSelector((state: RootState) => state.toDos.isLoggedIn);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <Container
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "25px",
+                    width: 900,
+                    gap: "20px",
+                  }}
+                >
+                  <Header />
+                  <TaskList />
+                </Container>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
